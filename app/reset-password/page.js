@@ -58,6 +58,9 @@ function ResetPasswordContent() {
       // If a code is present (newer PKCE flow), exchange it for a session.
       if (code) {
         const { error } = await supabase.auth.exchangeCodeForSession(code)
+
+           console.log("CODE:", code)
+           console.log("exchangeCodeForSession error:", error)
         if (!cancelled) {
           if (error) {
             setError('Invalid or expired reset link. Please request a new password reset.')
@@ -70,7 +73,14 @@ function ResetPasswordContent() {
 
       // If a token/type is present (legacy flow), verify the recovery token.
       if (token && type) {
-        const { error } = await supabase.auth.verifyOtp({ token_hash: token, type })
+        const { error } = await supabase.auth.verifyOtp({
+  token_hash: token,
+  type,
+})
+
+            console.log("TOKEN:", token)
+            console.log("TYPE:", type)
+            console.log("verifyOtp error:", error)
         if (!cancelled) {
           if (error) {
             setError('Invalid or expired reset link. Please request a new password reset.')
