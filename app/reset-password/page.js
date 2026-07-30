@@ -83,13 +83,15 @@ function ResetPasswordContent() {
 
       // No recovery params in URL — check if there's already an active session.
       const { data } = await supabase.auth.getSession()
-      if (!cancelled) {
-        if (data.session) {
+
+          if (!cancelled) {
+          if (data.session) {
           setSessionReady(true)
-        } else {
-          setError('No password reset session found. Please request a new password reset link.')
-        }
+         } else {
+        // Form ko dikhne do.
+       setSessionReady(true)
       }
+     }
     }
 
     restoreSession()
@@ -167,7 +169,7 @@ function ResetPasswordContent() {
           )}
 
           {/* Form — only show when session is ready and not already succeeded */}
-          {!success && sessionReady && !error && (
+          {!success && sessionReady && (
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-white/80">New Password</Label>
