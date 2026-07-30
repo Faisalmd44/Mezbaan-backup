@@ -63,8 +63,7 @@ function ResetPasswordContent() {
            console.log("exchangeCodeForSession error:", error)
         if (!cancelled) {
           if (error) {
-            setError(error?.message || JSON.stringify(error))
-          }
+            setError('Invalid or expired reset link. Please request a new password reset.')
           } else {
             setSessionReady(true)
           }
@@ -84,8 +83,7 @@ function ResetPasswordContent() {
             console.log("verifyOtp error:", error)
         if (!cancelled) {
           if (error) {
-             setError(error?.message || JSON.stringify(error))
-          }
+            setError('Invalid or expired reset link. Please request a new password reset.')
           } else {
             setSessionReady(true)
           }
