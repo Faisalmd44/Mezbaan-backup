@@ -14,15 +14,15 @@ import {
 const inr = (n) => `₹${n}`
 
 function Logo({ size = "md" }) {
-  const hClass = size === "lg" ? "h-[88px]" : "h-[78px]"
+  const hClass = size === "lg" ? "h-24 md:h-28" : "h-14 md:h-16"
   return (
     <Image
       src="/Logo.png"
       alt="Mezbaan"
-      width={280}
-      height={94}
+      width={320}
+      height={110}
       priority
-      className={`${hClass} w-auto object-contain`}
+      className={`${hClass} w-auto object-contain cursor-pointer transition-transform duration-200 hover:scale-105`}
     />
   )
 }
@@ -144,37 +144,88 @@ function VegBadge({ veg }) {
 }
 
 function MenuCard({ item, qty, onAdd, onInc, onDec }) {
-  const fallback = 'https://images.pexels.com/photos/20535804/pexels-photo-20535804.jpeg?auto=compress&cs=tinysrgb&w=600'
+  const [selectedVariant, setSelectedVariant] = useState(
+    item.variants && item.variants.length > 0 ? item.variants[0] : null
+  )
+
+  const currentPrice = selectedVariant ? selectedVariant.price : item.price
+  const displayName = selectedVariant ? `${item.name} (${selectedVariant.name})` : item.name
+  const itemKey = selectedVariant ? `${item.id}-${selectedVariant.name}` : item.id
+
   return (
-    <div className="group bg-neutral-900 border border-white/5 hover:border-[color:var(--mez-yellow)]/50 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_-15px_rgba(255,199,44,0.3)]">
-      <div className="relative h-44 bg-neutral-800 overflow-hidden">
-        <img src={item.image || fallback} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-        {item.popular && (
-          <Badge className="absolute top-3 left-3 bg-[color:var(--mez-yellow)] text-black font-bold border-0">
-            <Flame className="w-3 h-3 mr-1" /> Popular
-          </Badge>
-        )}
-        <div className="absolute top-3 right-3 bg-white/95 rounded p-1">
-          <VegBadge veg={item.veg} />
+    <div className="group relative bg-neutral-900/90 border border-white/10 rounded-2xl overflow-hidden hover:border-[color:var(--mez-yellow)]/50 transition duration-300 flex flex-col justify-between shadow-lg">
+      <div>
+        <div className="relative h-48 w-full overflow-hidden bg-neutral-800">
+          <Image
+            src={item.image}
+            alt={item.name}
+            fill
+            className="object-cover group-hover:scale-105 transition duration-500"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+          {item.popular && (
+            <span className="absolute top-3 left-3 bg-[color:var(--mez-yellow)] text-black text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow">
+              Popular
+            </span>
+          )}
+          <span className={`absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-full ${item.veg ? "bg-green-600/90 text-white" : "bg-red-600/90 text-white"} shadow backdrop-blur-sm`}>
+            {item.veg ? "VEG" : "NON-VEG"}
+          </span>
         </div>
-      </div>
-      <div className="p-4">
-        <h3 className="font-bold text-white leading-tight">{item.name}</h3>
-        <p className="text-sm text-white/50 mt-1 line-clamp-2">{item.desc}</p>
-        <div className="mt-4 flex items-center justify-between">
-          <span className="text-xl font-black text-[color:var(--mez-yellow)]">{inr(item.price)}</span>
-          {qty > 0 ? (
-            <div className="flex items-center gap-2 bg-[color:var(--mez-yellow)] text-black rounded-full px-1 py-1">
-              <button onClick={() => onDec(item)} className="w-7 h-7 rounded-full hover:bg-black/10 flex items-center justify-center"><Minus className="w-4 h-4" /></button>
-              <span className="font-bold w-4 text-center">{qty}</span>
-              <button onClick={() => onInc(item)} className="w-7 h-7 rounded-full hover:bg-black/10 flex items-center justify-center"><Plus className="w-4 h-4" /></button>
+
+        <div className="p-4">
+          <h4 className="font-bold text-lg text-white group-hover:text-[color:var(--mez-yellow)] transition">
+            {item.name}
+          </h4>
+          <p className="text-white/60 text-xs mt-1 line-clamp-2 leading-relaxed">
+            {item.desc}
+          </p>
+
+          {item.variants && item.variants.length > 0 && (
+            <div className="mt-3 flex items-center gap-2">
+              <span className="text-xs text-white/50 font-medium">Size:</span>
+              <div className="flex gap-1.5">
+                {item.variants.map((v) => {
+                  const isActive = selectedVariant?.name === v.name
+                  return (
+                    <button
+                      key={v.name}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedVariant(v)
+                      }}
+                      className={`text-xs px-2.5 py-1 rounded-md font-bold transition ${
+                        isActive
+                          ? "bg-[color:var(--mez-yellow)] text-black shadow"
+                          : "bg-neutral-800 text-white/70 hover:bg-neutral-700 hover:text-white border border-white/10"
+                      }`}
+                    >
+                      {v.name} · {inr(v.price)}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
-          ) : (
-            <Button onClick={() => onAdd(item)} className="bg-[color:var(--mez-yellow)] hover:bg-[color:var(--mez-yellow-dark)] text-black font-bold rounded-full h-9 px-4">
-              <Plus className="w-4 h-4 mr-1" /> Add
-            </Button>
           )}
         </div>
+      </div>
+
+      <div className="p-4 pt-0 flex items-center justify-between mt-2 border-t border-white/5">
+        <div>
+          <span className="text-xs text-white/40 block">Price</span>
+          <span className="text-xl font-extrabold text-[color:var(--mez-yellow)]">
+            {inr(currentPrice)}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onAdd({ ...item, id: itemKey, name: displayName, price: currentPrice })}
+          className="bg-[color:var(--mez-yellow)] hover:bg-yellow-400 text-black font-bold px-4 py-2 rounded-xl text-sm transition transform active:scale-95 shadow"
+        >
+          Add +
+        </button>
       </div>
     </div>
   )
