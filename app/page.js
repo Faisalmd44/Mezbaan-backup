@@ -13,17 +13,17 @@ import {
 
 const inr = (n) => `₹${n}`
 
-function Logo({ size = 'md' }) {
-  const dim = size === 'lg' ? 'text-3xl' : 'text-xl'
+function Logo({ size = "md" }) {
+  const hClass = size === "lg" ? "h-[88px]" : "h-[78px]"
   return (
     <Image
       src="/Logo.png"
-        alt="Mezbaan"
-          width={216}
-            height={72}
-              priority
-                className="h-[68px] w-auto"
-                />
+      alt="Mezbaan"
+      width={280}
+      height={94}
+      priority
+      className={`${hClass} w-auto object-contain`}
+    />
   )
 }
 
