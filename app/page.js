@@ -16,14 +16,16 @@ const inr = (n) => `₹${n}`
 function Logo({ size = "md" }) {
   const hClass = size === "lg" ? "h-24 md:h-28" : "h-14 md:h-16"
   return (
-    <Image
-      src="/Logo.png"
-      alt="Mezbaan"
-      width={320}
-      height={110}
-      priority
-      className={`${hClass} w-auto object-contain cursor-pointer transition-transform duration-200 hover:scale-105`}
-    />
+    <div className="flex items-center py-1">
+      <Image
+        src="/Logo.png"
+        alt="Mezbaan"
+        width={320}
+        height={110}
+        priority
+        className={`${hClass} w-auto object-contain cursor-pointer transition-transform duration-200 hover:scale-105`}
+      />
+    </div>
   )
 }
 
